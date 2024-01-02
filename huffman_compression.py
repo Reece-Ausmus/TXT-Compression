@@ -56,6 +56,13 @@ def build_huffman_codes(node, current_code="", huffman_codes=None):
     
     return huffman_codes
 
+def encode_text(text, huffman_codes):
+    """This method encodes the text according to the huffman_codes and returns the result as an integer"""
+    encoded_text = ""
+    for char in text:
+        encoded_text += huffman_codes[char]
+    return int(encoded_text, 2)
+
 def compress(input_file, compressed_file):
     with open(input_file, "r") as file:
         text = file.read()
@@ -64,7 +71,13 @@ def compress(input_file, compressed_file):
     huffman_tree = build_huffman_tree(frequency_table)
     huffman_codes = build_huffman_codes(huffman_tree)
 
-    print(huffman_codes)
+    encoded_text = encode_text(text, huffman_codes)
+
+    with open(compressed_file, "wb") as file:
+        while encoded_text > 0:
+            byte = encoded_text & 0xFF
+            file.write(bytes([byte]))
+            encoded_text >>= 8
 
 
 if __name__ == "__main__":
