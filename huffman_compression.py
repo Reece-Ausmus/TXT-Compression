@@ -32,7 +32,6 @@ def build_huffman_tree(frequency_table):
     """This method builds a tree out of TreeNode objects based on the frequency_table"""
     min_heap = Heap([TreeNode(char, frequency) for char, frequency in frequency_table.items()])
     min_heap.heapify()
-    print(is_min_heap(min_heap.nodes))
 
     while len(min_heap) > 1:
         left = min_heap.pop()
@@ -44,12 +43,28 @@ def build_huffman_tree(frequency_table):
 
     return min_heap.nodes[0]
 
+def build_huffman_codes(node, current_code="", huffman_codes=None):
+    """This method creates a dictionary of huffman_codes based on the Huffman Tree"""
+    if huffman_codes is None:
+        huffman_codes = {}
+
+    if node:
+        if node.char is not None:
+            huffman_codes[node.char] = current_code
+            build_huffman_codes(node.left, current_code + "0", huffman_codes)
+            build_huffman_codes(node.right, current_code + "1", huffman_codes)
+    
+    return huffman_codes
+
 def compress(input_file, compressed_file):
     with open(input_file, "r") as file:
         text = file.read()
     
     frequency_table = build_frequency_table(text)
     huffman_tree = build_huffman_tree(frequency_table)
+    huffman_codes = build_huffman_codes(huffman_tree)
+
+    print(huffman_codes)
 
 
 if __name__ == "__main__":

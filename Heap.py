@@ -39,10 +39,10 @@ class Heap:
     def pop(self):
         minNode = self.nodes[0]
         self.swap(0, len(self)-1)
-        self.pop(len(self)-1)
+        self.nodes = self.nodes[:-1]
         self.sink(0)
         return minNode
 
     def push(self, newNode):
-        self.append(newNode)
+        self.nodes.append(newNode)
         self.swim(len(self)-1)
