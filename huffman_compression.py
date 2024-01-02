@@ -80,10 +80,19 @@ def compress(input_file, compressed_file):
             encoded_text >>= 8
 
 
+def decompress(input_file, decompressed_file):
+    print()
+
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or not sys.argv[1].endswith(".txt"):
-        print("Usage: python huffman_compression.py <file_name>.txt")
-    else:
+    if (len(sys.argv) != 3) or not \
+        ((sys.argv[1].endswith(".txt") or sys.argv[1].endswith(".bin"))) or \
+            (sys.argv[2] != "c" and sys.argv[2] != "d"):
+        print("Usage: python huffman_compression.py <file_name> <c/d>")
+    elif sys.argv[2] == "c":
         input_file = sys.argv[1]
         compressed_file = input_file.replace(".txt", "_compressed.bin")
         compress(input_file, compressed_file)
+    elif sys.argv[2] == "d":
+        input_file = sys.argv[1]
+        decompressed_file = input_file.replace(".bin", "_decompressed.txt")
+        decompress(input_file, decompressed_file)
