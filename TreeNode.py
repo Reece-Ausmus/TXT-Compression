@@ -10,3 +10,7 @@ class TreeNode:
     def __lt__(self, other):
         """Performs less than comparison based on frequency"""
         return (self.frequency < other.frequency)
+    
+    def __gt__(self, other):
+        """Performs greater than comparison based on frequency"""
+        return (self.frequency > other.frequency)

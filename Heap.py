@@ -4,6 +4,13 @@ class Heap:
     def __init__(self, nodes):
         self.nodes = nodes
 
+    def __len__(self):
+        return len(self.nodes)
+    
+    def __str__(self):
+        string = ", ".join(f"{node.char}:{node.frequency}" for node in self.nodes)
+        return f"{{ {string} }}"
+
     def heapify(self):
         """This method sorts the array into min-heap order based on frequency in place"""
         for i in range((len(self) // 2) - 1, -1, -1):
