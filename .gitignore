@@ -161,3 +161,6 @@ cython_debug/
 
 # personal todo list for the project
 TODO.txt
+
+# example input file
+example.txt
