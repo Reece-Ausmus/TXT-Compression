@@ -4,6 +4,7 @@ from TreeNode import TreeNode
 from Heap import Heap
 
 def is_min_heap(arr):
+    """This method checks whether or not the passed arr is sorted in min-heap order"""
     n = len(arr)
     # Check each non-leaf node
     for i in range(n // 2 - 1, -1, -1):
@@ -30,10 +31,10 @@ def build_frequency_table(text):
 def build_huffman_tree(frequency_table):
     """This method builds a tree out of TreeNode objects based on the frequency_table"""
     min_heap = Heap([TreeNode(char, frequency) for char, frequency in frequency_table.items()])
-    print(min_heap)
     min_heap.heapify()
-    print(min_heap)
     print(is_min_heap(min_heap.nodes))
+
+    
     return min_heap.nodes[0]
 
 def compress(input_file, compressed_file):
