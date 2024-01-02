@@ -26,6 +26,7 @@ def build_huffman_tree(frequency_table):
     min_heap = [TreeNode(char, frequency) for char, frequency in frequency_table.items()]
     heapify(min_heap)
 
+
 def heapify(heap):
     """This method sorts the array into min-heap order based on frequency in place"""
     for i in range((len(heap) // 2) - 1, -1, -1):
@@ -50,3 +51,14 @@ def swim(heap, i):
 
 def swap(heap, i, j):
     heap[i], heap[j] = heap[j], heap[i]
+
+def pop(heap):
+    minNode = heap[0]
+    swap(heap, 0, len(heap)-1)
+    heap.pop(len(heap)-1)
+    sink(heap, 0)
+    return minNode
+
+def push(heap, newNode):
+    heap.append(newNode)
+    swim(heap, len(heap)-1)
