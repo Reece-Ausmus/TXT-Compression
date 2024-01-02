@@ -34,7 +34,14 @@ def build_huffman_tree(frequency_table):
     min_heap.heapify()
     print(is_min_heap(min_heap.nodes))
 
-    
+    while len(min_heap) > 1:
+        left = min_heap.pop()
+        right = min_heap.pop()
+        merged = TreeNode(None, left.frequency + right.frequency)
+        merged.left = left
+        merged.right = right
+        min_heap.push(merged)
+
     return min_heap.nodes[0]
 
 def compress(input_file, compressed_file):
