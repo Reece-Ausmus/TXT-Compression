@@ -51,8 +51,8 @@ def build_huffman_codes(node, current_code="", huffman_codes=None):
     if node:
         if node.char is not None:
             huffman_codes[node.char] = current_code
-            build_huffman_codes(node.left, current_code + "0", huffman_codes)
-            build_huffman_codes(node.right, current_code + "1", huffman_codes)
+        build_huffman_codes(node.left, current_code + "0", huffman_codes)
+        build_huffman_codes(node.right, current_code + "1", huffman_codes)
     
     return huffman_codes
 
