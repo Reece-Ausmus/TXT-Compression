@@ -63,7 +63,7 @@ def encode_text(text, huffman_codes):
         encoded_text += huffman_codes[char]
     return int(encoded_text, 2)
 
-def compress(input_file, compressed_file):
+def compress(input_file, output_file):
     with open(input_file, "r") as file:
         text = file.read()
     
@@ -73,15 +73,38 @@ def compress(input_file, compressed_file):
 
     encoded_text = encode_text(text, huffman_codes)
 
-    with open(compressed_file, "wb") as file:
+    with open(output_file, "wb") as file:
         while encoded_text > 0:
             byte = encoded_text & 0xFF
             file.write(bytes([byte]))
             encoded_text >>= 8
 
+def decode_text(encoded_text, huffman_tree):
+    decoded_text = ""
+    current_node = huffman_tree
 
-def decompress(input_file, decompressed_file):
-    print()
+    for bit in encoded_text:
+        if bit == 0:
+            current_node = current_node.left
+        elif bit == 1:
+            current_node = current_node.right
+
+        if current_node.char is not None:
+            decoded_text += current_node.char
+            current_node = huffman_tree
+        
+    return decoded_text
+
+def decompress(input_file, output_file, huffman_tree):
+    with open(input_file, "rb") as file:
+        encoded_data = file.read()
+    
+    encoded_text = ''.join(format(byte, '08b') for byte in encoded_data)
+
+    decoded_text = decode_text(encoded_text, huffman_tree)
+
+    with open(output_file, 'w') as file:
+        file.write(decoded_text)
 
 if __name__ == "__main__":
     if (len(sys.argv) != 3) or not \
@@ -95,4 +118,4 @@ if __name__ == "__main__":
     elif sys.argv[2] == "d":
         input_file = sys.argv[1]
         decompressed_file = input_file.replace(".bin", "_decompressed.txt")
-        decompress(input_file, decompressed_file)
+        decompress(input_file, decompressed_file,)
