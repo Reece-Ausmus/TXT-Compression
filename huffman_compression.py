@@ -1,5 +1,6 @@
 import sys
 import os
+import pickle
 from TreeNode import TreeNode
 from Heap import Heap
 
@@ -74,6 +75,10 @@ def compress(input_file, output_file):
     encoded_text = encode_text(text, huffman_codes)
 
     with open(output_file, "wb") as file:
+        pickle.dump(huffman_tree, file)
+
+        file.write(b"\0")
+        
         while encoded_text > 0:
             byte = encoded_text & 0xFF
             file.write(bytes([byte]))
@@ -84,9 +89,9 @@ def decode_text(encoded_text, huffman_tree):
     current_node = huffman_tree
 
     for bit in encoded_text:
-        if bit == 0:
+        if bit == '0':
             current_node = current_node.left
-        elif bit == 1:
+        elif bit == '1':
             current_node = current_node.right
 
         if current_node.char is not None:
@@ -95,8 +100,15 @@ def decode_text(encoded_text, huffman_tree):
         
     return decoded_text
 
-def decompress(input_file, output_file, huffman_tree):
+def decompress(input_file, output_file):
     with open(input_file, "rb") as file:
+        huffman_tree = pickle.load(file)
+
+        separator = file.read(1)
+        if separator != b"\0":
+            #raise ValueError("Invalid compressed file format")
+            print("Invalid compressed file format")
+        
         encoded_data = file.read()
     
     encoded_text = ''.join(format(byte, '08b') for byte in encoded_data)
@@ -118,4 +130,4 @@ if __name__ == "__main__":
     elif sys.argv[2] == "d":
         input_file = sys.argv[1]
         decompressed_file = input_file.replace(".bin", "_decompressed.txt")
-        decompress(input_file, decompressed_file,)
+        decompress(input_file, decompressed_file)

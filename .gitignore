@@ -163,4 +163,4 @@ cython_debug/
 TODO.txt
 
 # example input file
-example.txt
+*.txt
