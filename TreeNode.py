@@ -14,3 +14,14 @@ class TreeNode:
     def __gt__(self, other):
         """Performs greater than comparison based on frequency"""
         return (self.frequency > other.frequency)
+    
+    def __str__(self):
+        result = []
+        self._preorder(self, result)
+        return "{" + ", ".join(result) + "}"
+
+    def _preorder(self, node, result):
+        if node is not None:
+            result.append(f"{node.char}:{node.frequency}")
+            self._preorder(node.left, result)
+            self._preorder(node.right, result)

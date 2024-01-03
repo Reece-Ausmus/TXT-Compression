@@ -62,7 +62,7 @@ def encode_text(text, huffman_codes):
     encoded_text = ""
     for char in text:
         encoded_text += huffman_codes[char]
-    return int(encoded_text, 2)
+    return encoded_text
 
 def compress(input_file, output_file):
     with open(input_file, "r") as file:
@@ -79,10 +79,13 @@ def compress(input_file, output_file):
 
         file.write(b"\0")
         
-        while encoded_text > 0:
-            byte = encoded_text & 0xFF
+        file.write(len(encoded_text).to_bytes(4, byteorder='big'))
+
+        file.write(int(encoded_text, 2).to_bytes((len(encoded_text) + 7) // 8, byteorder='big'))
+
+        for i in range(0, len(encoded_text), 8):
+            byte = int(encoded_text[i:i+8], 2)
             file.write(bytes([byte]))
-            encoded_text >>= 8
 
 def decode_text(encoded_text, huffman_tree):
     decoded_text = ""
@@ -106,12 +109,13 @@ def decompress(input_file, output_file):
 
         separator = file.read(1)
         if separator != b"\0":
-            #raise ValueError("Invalid compressed file format")
-            print("Invalid compressed file format")
+            raise ValueError("Invalid compressed file format")
         
-        encoded_data = file.read()
-    
-    encoded_text = ''.join(format(byte, '08b') for byte in encoded_data)
+        encoded_text_length = int.from_bytes(file.read(4), byteorder='big')
+        
+        encoded_data = bin(int.from_bytes(file.read((encoded_text_length + 7) // 8), byteorder='big'))[2:]
+
+    encoded_text = encoded_data.zfill(encoded_text_length)
 
     decoded_text = decode_text(encoded_text, huffman_tree)
 
