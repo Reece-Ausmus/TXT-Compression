@@ -83,10 +83,6 @@ def compress(input_file, output_file):
 
         file.write(int(encoded_text, 2).to_bytes((len(encoded_text) + 7) // 8, byteorder='big'))
 
-        for i in range(0, len(encoded_text), 8):
-            byte = int(encoded_text[i:i+8], 2)
-            file.write(bytes([byte]))
-
 def decode_text(encoded_text, huffman_tree):
     decoded_text = ""
     current_node = huffman_tree
