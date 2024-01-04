@@ -57,13 +57,14 @@ def build_huffman_codes(node, current_code="", huffman_codes=None):
     return huffman_codes
 
 def encode_text(text, huffman_codes):
-    """This method encodes the text according to the huffman_codes and returns the result as an integer"""
+    """This method encodes the text according to the huffman_codes"""
     encoded_text = ""
     for char in text:
         encoded_text += huffman_codes[char]
     return encoded_text
 
 def compress(input_file, output_file):
+    """This method reads the data from the input_file, uses helper methods to obtain the encoded text, and writes it to the output_file"""
     with open(input_file, "r") as file:
         text = file.read()
     
@@ -83,6 +84,7 @@ def compress(input_file, output_file):
         file.write(int(encoded_text, 2).to_bytes((len(encoded_text) + 7) // 8, byteorder='big'))
 
 def decode_text(encoded_text, huffman_tree):
+    """This method decodes the text according to the huffman_tree"""
     decoded_text = ""
     current_node = huffman_tree
 
@@ -99,6 +101,7 @@ def decode_text(encoded_text, huffman_tree):
     return decoded_text
 
 def decompress(input_file, output_file):
+    """This method reads the data from the input_file, uses helper methods to obtain the decoded text, and writes it to the output_file"""
     with open(input_file, "rb") as file:
         huffman_tree = pickle.load(file)
 
@@ -118,6 +121,7 @@ def decompress(input_file, output_file):
         file.write(decoded_text)
 
 if __name__ == "__main__":
+    """Provides error handling for usage of script and calls appropriate method if no errors"""
     if (len(sys.argv) != 3) or not \
         ((sys.argv[1].endswith(".txt") or sys.argv[1].endswith(".bin"))) or \
             (sys.argv[2] != "c" and sys.argv[2] != "d"):
