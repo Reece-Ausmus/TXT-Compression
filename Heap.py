@@ -8,6 +8,7 @@ class Heap:
         return len(self.nodes)
     
     def __str__(self):
+        """Returns a string representing each node in the heap, excluding child nodes"""
         string = ", ".join(f"{node.char}:{node.frequency}" for node in self.nodes)
         return f"{{ {string} }}"
 
@@ -17,6 +18,7 @@ class Heap:
             self.sink(i)
 
     def sink(self, i):
+        """A helper method to maintain min-heap order"""
         small = i
         left = 2*i + 1
         right = 2*i + 2
@@ -29,14 +31,17 @@ class Heap:
             self.sink(small)
 
     def swim(self, i):
+        """A helper method to maintain min-heap order"""
         if (self.nodes[i].frequency < self.nodes[(i-1) // 2].frequency):
             self.swap(i, (i-1) // 2)
             self.swim((i-1) // 2)
 
     def swap(self, i, j):
+        """A helper method for heap operations"""
         self.nodes[i], self.nodes[j] = self.nodes[j], self.nodes[i]
 
     def pop(self):
+        """Removes the minimum TreeNode from the Heap and returns it"""
         minNode = self.nodes[0]
         self.swap(0, len(self)-1)
         self.nodes = self.nodes[:-1]
@@ -44,5 +49,6 @@ class Heap:
         return minNode
 
     def push(self, newNode):
+        """Adds the newNode to the Heap and updates the Heap to maintain min-heap order"""
         self.nodes.append(newNode)
         self.swim(len(self)-1)

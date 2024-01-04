@@ -16,11 +16,13 @@ class TreeNode:
         return (self.frequency > other.frequency)
     
     def __str__(self):
+        """Returns a string representing the TreeNode and its children"""
         result = []
         self._preorder(self, result)
         return "{" + ", ".join(result) + "}"
 
     def _preorder(self, node, result):
+        """A helper method for __str__() that traverses the tree in preorder"""
         if node is not None:
             result.append(f"{node.char}:{node.frequency}")
             self._preorder(node.left, result)
