@@ -1,5 +1,4 @@
 import sys
-import os
 import pickle
 from TreeNode import TreeNode
 from Heap import Heap
