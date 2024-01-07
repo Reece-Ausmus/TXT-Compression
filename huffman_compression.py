@@ -123,12 +123,15 @@ def decompress(input_file, output_file):
 if __name__ == "__main__":
     """Provides error handling for usage of script and calls appropriate method if no errors"""
     if (len(sys.argv) != 3) or not \
-        ((sys.argv[1].endswith(".txt") or sys.argv[1].endswith(".bin"))) or \
+        ((sys.argv[1].endswith(".txt") or sys.argv[1].endswith(".bin")) or sys.argv[1].endswith(".html")) or \
             (sys.argv[2] != "c" and sys.argv[2] != "d"):
         print("Usage: python huffman_compression.py <file_name> <c/d>")
     elif sys.argv[2] == "c":
         input_file = sys.argv[1]
-        compressed_file = input_file.replace(".txt", "_compressed.bin")
+        if sys.argv[1].endswith(".txt"):
+            compressed_file = input_file.replace(".txt", "_compressed.bin")
+        elif sys.argv[1].endswith(".html"):
+            compressed_file = input_file.replace(".html", "_compressed.bin")
         compress(input_file, compressed_file)
     elif sys.argv[2] == "d":
         input_file = sys.argv[1]
