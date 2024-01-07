@@ -63,7 +63,7 @@ def encode_text(text, huffman_codes):
         encoded_text += huffman_codes[char]
     return encoded_text
 
-def compress(input_file, output_file):
+def compress(input_file, output_file, file_type):
     """This method reads the data from the input_file, uses helper methods to obtain the encoded text, and writes it to the output_file"""
     with open(input_file, "r") as file:
         text = file.read()
@@ -78,9 +78,13 @@ def compress(input_file, output_file):
         pickle.dump(huffman_tree, file)
 
         file.write(b"\0")
+
+        file_type_binary = file_type.encode()
+        file_type_string = ''.join(format(byte, '08b') for byte in file_type_binary)
+        file.write(len(file_type_string).to_bytes(4, byteorder='big'))
+        file.write(int(file_type_string, 2).to_bytes((len(file_type_string) + 7) // 8, byteorder='big'))
         
         file.write(len(encoded_text).to_bytes(4, byteorder='big'))
-
         file.write(int(encoded_text, 2).to_bytes((len(encoded_text) + 7) // 8, byteorder='big'))
 
 def decode_text(encoded_text, huffman_tree):
@@ -100,7 +104,7 @@ def decode_text(encoded_text, huffman_tree):
         
     return decoded_text
 
-def decompress(input_file, output_file):
+def decompress(input_file):
     """This method reads the data from the input_file, uses helper methods to obtain the decoded text, and writes it to the output_file"""
     with open(input_file, "rb") as file:
         huffman_tree = pickle.load(file)
@@ -109,14 +113,20 @@ def decompress(input_file, output_file):
         if separator != b"\0":
             raise ValueError("Invalid compressed file format")
         
-        encoded_text_length = int.from_bytes(file.read(4), byteorder='big')
-        
+        file_type_length = int.from_bytes(file.read(4), byteorder='big')    
+        file_type_data = bin(int.from_bytes(file.read((file_type_length + 7) // 8), byteorder='big'))[2:]
+
+        encoded_text_length = int.from_bytes(file.read(4), byteorder='big') 
         encoded_data = bin(int.from_bytes(file.read((encoded_text_length + 7) // 8), byteorder='big'))[2:]
 
+    file_type = file_type_data.zfill(file_type_length)
+    file_type_binary = int(file_type, 2).to_bytes((len(file_type) + 7) // 8, byteorder='big')
+    file_type_text = file_type_binary.decode('utf-8')
     encoded_text = encoded_data.zfill(encoded_text_length)
 
     decoded_text = decode_text(encoded_text, huffman_tree)
 
+    output_file = input_file.replace(".bin", "_decompressed." + file_type_text)
     with open(output_file, 'w') as file:
         file.write(decoded_text)
 
@@ -130,10 +140,11 @@ if __name__ == "__main__":
         input_file = sys.argv[1]
         if sys.argv[1].endswith(".txt"):
             compressed_file = input_file.replace(".txt", "_compressed.bin")
+            file_type = "txt"
         elif sys.argv[1].endswith(".html"):
             compressed_file = input_file.replace(".html", "_compressed.bin")
-        compress(input_file, compressed_file)
+            file_type = "html"
+        compress(input_file, compressed_file, file_type)
     elif sys.argv[2] == "d":
         input_file = sys.argv[1]
-        decompressed_file = input_file.replace(".bin", "_decompressed.txt")
-        decompress(input_file, decompressed_file)
+        decompress(input_file)
