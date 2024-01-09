@@ -1,4 +1,5 @@
 import sys
+import os
 import pickle
 from TreeNode import TreeNode
 from Heap import Heap
@@ -65,7 +66,7 @@ def encode_text(text, huffman_codes):
 
 def compress(input_file, output_file, file_type):
     """This method reads the data from the input_file, uses helper methods to obtain the encoded text, and writes it to the output_file"""
-    with open(input_file, "r") as file:
+    with open(input_file, "rb") as file:
         text = file.read()
     
     frequency_table = build_frequency_table(text)
@@ -132,19 +133,15 @@ def decompress(input_file):
 
 if __name__ == "__main__":
     """Provides error handling for usage of script and calls appropriate method if no errors"""
-    if (len(sys.argv) != 3) or not \
-        ((sys.argv[1].endswith(".txt") or sys.argv[1].endswith(".bin")) or sys.argv[1].endswith(".html")) or \
-            (sys.argv[2] != "c" and sys.argv[2] != "d"):
-        print("Usage: python huffman_compression.py <file_name> <c/d>")
-    elif sys.argv[2] == "c":
+    #if (len(sys.argv) != 3) or not \
+    #    ((sys.argv[1].endswith(".txt") or sys.argv[1].endswith(".bin")) or sys.argv[1].endswith(".html")) or \
+    #        (sys.argv[2] != "c" and sys.argv[2] != "d"):
+    #    print("Usage: python huffman_compression.py <file_name> <c/d>")
+    if sys.argv[2] == "c":
         input_file = sys.argv[1]
-        if sys.argv[1].endswith(".txt"):
-            compressed_file = input_file.replace(".txt", "_compressed.bin")
-            file_type = "txt"
-        elif sys.argv[1].endswith(".html"):
-            compressed_file = input_file.replace(".html", "_compressed.bin")
-            file_type = "html"
-        compress(input_file, compressed_file, file_type)
+        base, extension = os.path.splitext(input_file)
+        compressed_file = base + "_compressed.bin"
+        compress(input_file, compressed_file, extension[1:])
     elif sys.argv[2] == "d":
         input_file = sys.argv[1]
         decompress(input_file)
